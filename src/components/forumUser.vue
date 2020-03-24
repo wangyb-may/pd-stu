@@ -163,6 +163,7 @@ export default{
 		
 		
 		updateForumName(){
+			//测试注释
 			console.log(this.ForumUser);
 			axios.get('http://localhost:9502/student/updateForumName',{params:{
 				uid:this.uid,
