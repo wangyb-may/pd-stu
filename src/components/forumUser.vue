@@ -19,7 +19,7 @@
 				    <el-collapse-item title="我的发帖" name="1">
 				      <div v-for="post in dealPosts">
 				      <el-row type="flex" class="row-bg" justify="center" >
-				        <el-col :span="15">
+				        <el-col :span="20">
 				        	<el-card shadow="hover">	
 				        	  <el-row>
 				      		  <el-col :span="15"><el-link href="" target="_blank" :underline="false"><h3>{{post.title}}</h3></el-link></el-col>
@@ -143,6 +143,8 @@ export default{
 			forumName:'',
 			
 			student:'',
+			rawPosts:[],
+			dealPosts:[],
 			
 			content: null,
 			editorOption: {
@@ -184,6 +186,34 @@ export default{
 			}).catch(error=>{
 				this.$message.error(error.message);
 			})
+		},
+		
+		//获取帖子数据
+		findUserPostList(){
+			console.log(this.student.uid);
+			axios.get("http://localhost:9505/post/userPostList?userId="+this.student.uid).then(res=>{
+				this.rawPosts=res.data.data;
+				console.log(this.rawPosts);
+				this.dealPosts=this.dealPostsData(this.rawPosts);
+			}).catch(error=>{
+				this.$message.error(error.message);
+			})
+		},
+		
+		//帖子数据处理
+		dealPostsData(posts){
+			for(var i=0;i<posts.length;i++){
+				if(posts[i].postType==1){
+					posts[i].postType="灌水帖";
+				}else{
+					posts[i].postType="学术贴";
+				}
+				
+				if(posts[i].content.length>=40){
+					posts[i].content=posts[i].content.slice(0,40)+"...";
+				}
+			}
+			return posts;
 		}
 		
 		
@@ -199,6 +229,7 @@ export default{
 		if(this.student.forumName!=null&&this.student.forumName!=""){
 			this.forumName=this.student.forumName;
 		}
+		this.findUserPostList();
 		
 	}
 	

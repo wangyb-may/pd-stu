@@ -1,5 +1,5 @@
 <template>
-	<div v-if="forumName===''">
+	<div v-if="forumName===null">
 		请先设置一个论坛昵称，论坛将不会使用你的真实姓名
 		<el-form ref="form"  label-width="80px">
 		  <el-row :gutter="20">
