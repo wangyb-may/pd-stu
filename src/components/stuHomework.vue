@@ -84,9 +84,16 @@
 			upHomework(index,row){
 				
 				var data={
-					homeworkId:row.homeworkId,
-					uid:''
+					student:this.stuData,
+					homework:row
 				}
+				var url='http://localhost:9502/student/homework/uplodHomework';
+				axios.post(url,data).then(
+				response=>{
+					if(response.data.status==="0"){
+						console.log(response.message);
+					}
+				})
 			},
 			
 			//根据关键词查询作业，关键词有课程、教师、作业名，均为模糊查询

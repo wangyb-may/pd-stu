@@ -64,7 +64,7 @@ export default{
 			
 			forumName:'',
 			
-			circleUrl:'../src/static/image/x.jpg'
+			circleUrl:'http://wyb-bysj.oss-cn-chengdu.aliyuncs.com/image/456.jpg?Expires=1586684889&OSSAccessKeyId=LTAI4FqEfb86cMQiGtcEtxPn&Signature=iVLRCcpE7Wfca0Iy6wncFO%2FpEGc%3D'
 			
 			
 		}
