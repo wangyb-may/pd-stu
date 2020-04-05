@@ -35,10 +35,18 @@
 				  type="text"
 				  size="mini"
 				  @click="checkDetail(scope.$index, scope.row)">详情</el-button>
-				<el-button
-				  type="text"
-				  size="mini"
-				  @click="upHomework(scope.$index, scope.row)">提交</el-button>
+				  <el-upload
+				    class="upload-demo"
+				    action="http://localhost:9502/student/homework/uploadHomework"
+				    multiple
+					:data="updata"
+				    :limit="1"
+				    :file-list="fileList">
+				    <el-button
+						type="text" 
+				    	size="mini"
+				    @click="upHomework(scope.$index, scope.row)">提交</el-button>
+				  </el-upload>
 			  </template>
 			</el-table-column>
 		  </el-table>
@@ -66,6 +74,12 @@
 				
 				keywords:'',
 				stuData:'',
+				updata:{
+					homeworkId:'',
+					uid:''
+				},
+				fileList:[],
+				
 				
 				
 				pageNum:1,
@@ -82,19 +96,14 @@
 			
 			//提交作业
 			upHomework(index,row){
-				
-				var data={
-					student:this.stuData,
-					homework:row
-				}
-				var url='http://localhost:9502/student/homework/uplodHomework';
-				axios.post(url,data).then(
-				response=>{
-					if(response.data.status==="0"){
-						console.log(response.message);
-					}
-				})
+				this.updata.uid=this.stuData.uid;
+				this.updata.homeworkId=row.homeworkId;
 			},
+			
+
+			handleExceed(files, fileList) {
+			        this.$message.warning(`当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+			      },
 			
 			//根据关键词查询作业，关键词有课程、教师、作业名，均为模糊查询
 			findByKeywords(isShow){
@@ -148,7 +157,7 @@
 							this.allData=JSON.parse(JSON.stringify(temp));
 							this.homeworkData=temp;
 							for(var i=0;i<this.homeworkData.length;i++){
-								this.homeworkData[i].homeworkId=this.homeworkData[i].homeworkId.slice(0,12)+'....';
+								
 								if(this.homeworkData[i].context.length>=5){
 									this.homeworkData[i].context=this.homeworkData[i].context.slice(0,10)+'...';
 								}
