@@ -38,6 +38,7 @@
 				  <el-upload
 				    class="upload-demo"
 				    action="http://localhost:9502/student/homework/uploadHomework"
+					:on-success="upSuccess"
 				    multiple
 					:data="updata"
 				    :limit="1"
@@ -98,6 +99,13 @@
 			upHomework(index,row){
 				this.updata.uid=this.stuData.uid;
 				this.updata.homeworkId=row.homeworkId;
+			},
+			
+			upSuccess(){
+				this.$message({
+				  type: 'success',
+				  message:  '作业提交成功！'
+				});
 			},
 			
 

@@ -96,7 +96,30 @@
 		</div>
 		
 		<div v-else-if="leftIndex==='1-3'">
-			
+			<el-table
+			      :data="myCourseList"
+			      style="width: 100%">
+			      <el-table-column
+			        prop="name"
+			        label="课程名称"
+			        width="250">
+			      </el-table-column>
+			      <el-table-column
+			        prop="teacher"
+			        label="任课教师"
+			        width="180">
+			      </el-table-column>
+			      <el-table-column
+			        prop="createTime"
+			        label="开课时间">
+			      </el-table-column>
+				  <el-table-column>
+					  <template slot-scope="scope">
+						  <el-button type="danger" @click="delMyCourse(scope.row)">取消选课</el-button>
+					  </template>
+					  
+				  </el-table-column>
+			    </el-table>
 		</div>
 		<router-view></router-view>
 	  </el-main>
@@ -180,7 +203,11 @@
 				//左侧导航栏序号
 				leftIndex:'1-1',
 				
-				upImageUrl:''
+				upImageUrl:'',
+				
+				myCourseList:'',
+				delStatus:'',
+				delMessage:''
 				
 			}
 		},
@@ -274,6 +301,65 @@
 				this.$router.push({
 					path:'/student/personal/forumUser'
 				})
+			},
+			
+			findMyCourse(){
+				var data={
+					uid:this.Student.uid
+				}
+				var url="http://localhost:9502//stuCourse/myCourse"
+				axios.post(url,data).then(response=>{
+					if(response.data.status=='0'){
+						this.myCourseList=response.data.data;
+					}else{
+						this.$message.error(response.data.message);
+					}
+						
+				}).catch(error=>{
+					this.$message.error(error.message);
+				})
+			},
+			
+			delMyCourse(row){
+				this.$confirm('你将取消这个课程的选课，并且取消所有的作业，你的作业提交信息将被删除，请问是否继续？', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning',
+					 beforeClose: (action, instance, done) => {
+						if (action === 'confirm') {
+						  instance.confirmButtonLoading = true;
+						  instance.confirmButtonText = '删除中...';
+						  var data={
+							  courseId:row.courseId,
+							  uid:this.Student.uid
+						  }
+						  axios.post('http://localhost:9502/stuCourse/delMyCourse',data).then(response=>{
+							  if(response.data.status=='0'){
+								  this.delStatus='success';
+								  this.findMyCourse();
+							  }else{
+								  this.delStatus='error'
+							  }
+							  this.delMessage=response.data.message;
+							  instance.confirmButtonLoading = false;
+							  done();
+						  }).catch(error=>{
+							  this.delMessage=error;
+							  instance.confirmButtonLoading = false;
+							  done();
+						  });
+						} else {
+						  done();
+						}
+					  }
+				}).then(action  => {
+				  this.$message({
+					  type: this.delStatus,
+					  message:  this.delMessage
+					});
+				}).catch(() => {
+									
+				});
 			}
 			
 		},
@@ -284,6 +370,7 @@
 		created(){
 			this.Student=this.$store.state.userData;
 			console.log(this.Student);
+			this.findMyCourse();
 		}
 	}
 </script>

@@ -96,7 +96,7 @@
 					<select class="ql-color" value="color" title="字体颜色"></select>
 					<select class="ql-background" value="background" title="背景颜色"></select>
 					<select class="ql-align" value="align" title="对齐"></select>
-					<button class="ql-formats" title="上传图片"></button>
+					<button class="ql-picker" title="上传图片"></button>
 					<button class="ql-clean" title="还原"></button>
 					<!-- You can also add your own -->
 				  </div>
