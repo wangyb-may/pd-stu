@@ -33,6 +33,7 @@
 			  <el-page-header @back="goBack" content="课程详情页面" ></el-page-header>
 			  <h2 style="text-align: center;">{{courseDetail.name}}</h2>
 			  <h4 style="text-align: center;">创建时间:{{courseDetail.createTime}}   任课教师:{{courseDetail.teacher}}</h4>
+			  <div v-html="courseDetail.courseContext"></div>
 			  <el-button type="button" @click="open">点击加入此课程</el-button>
 		  </div>
 		  

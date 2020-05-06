@@ -18,7 +18,10 @@ import stuPersonal from './components/stuPersonal'
 import forum from './components/forum'
 import forumUser from './components/forumUser'
 import teacher from './components/teacher'
+import teacherCourse from './components/teacherCourse'
+import teacherHomework from './components/teacherHomework'
 import store from './store/'
+
 
 
 Vue.use(ElementUI)
@@ -45,7 +48,15 @@ const routes=[
 		]
 	},
 	
-	{path:'/teacher',name:'teacher',component:teacher}
+	{
+		path:'/teacher',
+		name:'teacher',
+		component:teacher,
+		children:[
+			{path:'/teacher/course',name:'teacherCourse',component:teacherCourse},
+			{path:'/teacher/homework',name:'teacherHomework',component:teacherHomework}
+		]
+	}
 ]
 
 const routers=new VueRouter({

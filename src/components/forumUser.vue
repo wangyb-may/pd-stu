@@ -102,7 +102,6 @@
 				  </div>
 				</quill-editor>
 			  </el-row>
-			  
 		  </el-form>
 	  
 </template>
