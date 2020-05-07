@@ -12,7 +12,7 @@
 			
 		    <el-menu-item index="/teacher/homework">作业工作台</el-menu-item>
 		    <el-menu-item index="/teacher/course">课程工作台</el-menu-item>
-		    <el-menu-item index="/forum">论坛交流</el-menu-item>
+		    <el-menu-item index="t/forum">论坛交流</el-menu-item>
 			<el-submenu index="4" style="justify-content: flex-end;">
 				<template slot="title">
 					<el-avatar :src="imageUrl"></el-avatar>

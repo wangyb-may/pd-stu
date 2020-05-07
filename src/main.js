@@ -44,7 +44,7 @@ const routes=[
 				]
 			},
 			{path:'/student/homework',name:'stuHomework',component:stuHomework},
-			{path:'/forum',name:'forum',component:forum},
+			{path:'s/forum',name:'forum',component:forum},
 		]
 	},
 	
@@ -54,7 +54,8 @@ const routes=[
 		component:teacher,
 		children:[
 			{path:'/teacher/course',name:'teacherCourse',component:teacherCourse},
-			{path:'/teacher/homework',name:'teacherHomework',component:teacherHomework}
+			{path:'/teacher/homework',name:'teacherHomework',component:teacherHomework},
+			{path:'t/forum',name:'forum',component:forum},
 		]
 	}
 ]
