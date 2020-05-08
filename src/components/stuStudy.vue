@@ -41,7 +41,19 @@
 	  </el-tab-pane>
 	  
 	  <el-tab-pane label="教学辅助资料">
-		  教学辅助资料
+		  	<el-table :data="attachmentList" ref = "multipleTable">
+		  	  <el-table-column prop="name" label="附件名">
+		  	  </el-table-column>
+		  	  <el-table-column prop="courseName" label="所属课程">
+		  	  </el-table-column>
+		  	  <el-table-column prop="upTime" label="上传时间">
+		  	  </el-table-column>
+		  	  <el-table-column label="操作">
+		  		  <template slot-scope="scope">
+		  			  <el-button type="text" @click="downloadAttachment(scope.row)">下载</el-button>
+		  		  </template>  
+		  	  </el-table-column>
+		  	</el-table>
 	  </el-tab-pane>
 	</el-tabs>
 </template>
@@ -58,8 +70,12 @@
 			  isDetail:'',
 			  courseDetail:'',
 			  chooseMessage:'',
-			  chooseStatus:''
-		    };
+			  chooseStatus:'',
+			  
+			  //附件
+			  attachmentList:{},
+			  multipleTable:''
+		    }
 		  },
 		  
 		  methods:{
@@ -132,13 +148,34 @@
 				  }).catch(() => {
 					
 				  });
+			  },
+			  
+			  findAttachmentList(){
+				  var data={
+					  uid:this.student.uid
+				  }
+				  axios.post('http://localhost:9502/stuCourse/findAttachmentList',data).then(response=>{
+					  if(response.data.status=='0'){
+						  this.attachmentList=response.data.data;
+					  }else{
+						  this.$message.error('查询附件列表失败');
+					  }
+				  }).catch(error=>{
+					  this.$message.error('查询附件列表失败');
+				  })
+			  },
+			  
+			  downloadAttachment(row){
+				  window.location.href=row.upUrl;
 			  }
+			  
 		  },
 		  
 		  created(){
 		  	this.findCourseList(0);
 			this.isDetail=0;
 			this.student=this.$store.state.userData;
+			this.findAttachmentList();
 		  }
 		  
 	}

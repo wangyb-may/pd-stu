@@ -1,5 +1,6 @@
 <template>
-	  <el-container style="height: 650px; border: 1px solid #eee">
+	  <el-container >
+		  
 	    <el-aside width="200px" style="background-color: rgb(238, 241, 246)">
 	      <el-menu :default-openeds="['1']">
 	        <el-submenu index="1">
@@ -180,6 +181,70 @@
 			</el-form>
 		</el-container>
 		
+		<el-container v-if="itemIndex=='1-3'" >
+			<el-form style="width: 500px;">
+				<el-form-item>
+					<el-button type="primary" @click="courseDialog=true" style="height: 50px;">点击上传新的附件</el-button>
+				</el-form-item>
+				<el-form-item>
+					<el-table :data="attachmentList" ref = "multipleTable3">
+					  <el-table-column prop="name" label="附件名">
+					  </el-table-column>
+					  <el-table-column prop="courseName" label="所属课程">
+					  </el-table-column>
+					  <el-table-column prop="upTime" label="上传时间">
+					  </el-table-column>
+					  <el-table-column label="操作">
+						  <template slot-scope="scope">
+							  <el-button type="text" @click="delAttachment(scope.row)">删除</el-button>
+						  </template>  
+					  </el-table-column>
+					</el-table>
+				</el-form-item>
+			</el-form>
+				
+			
+			<el-drawer
+			  title="上传附件"
+			  :visible.sync="courseDialog"
+			  direction="ltr"
+			  custom-class="demo-drawer"
+			  ref="drawer"
+			  >
+			  <div class="demo-drawer__content">
+			    <el-form >
+			      <el-form-item label="附件所属课程" :label-width="formLabelWidth">
+			        <el-select v-model="attaCourseId" placeholder="请选择课程">
+			          <el-option
+			                v-for="item in course"
+			                :key="item.courseId"
+			                :label="item.name"
+			                :value="item.courseId">
+			              </el-option>
+			        </el-select>
+			      </el-form-item>
+				  <el-form-item label="附件名称" :label-width="formLabelWidth">
+					  <el-input v-model="attachmentName" autocomplete="off"></el-input>
+				  </el-form-item>
+				  <el-form-item>
+					  <el-upload
+					    class="upload-demo"
+					    action="http://localhost:9501/teacherCourse/upAttachment"
+					    :on-success="upSuccess"
+					    multiple
+					    :data="attachment"
+					    :limit="1"
+					    :file-list="fileList">
+					    <el-button
+					  	type="primary" 
+					    @click="upAttachment">上传附件</el-button>
+					  </el-upload>
+				  </el-form-item>
+			    </el-form>
+			  </div>
+			</el-drawer>		
+		</el-container>
+		
 		</el-container>
 	  
 </template>
@@ -245,6 +310,7 @@
 					  courseContext:'',
 				  },
 				  
+				  
 				  addCourseRules:{
 					  name:[
 						  {required: true, message: '请输入课程名称', trigger: 'blur'}
@@ -255,11 +321,22 @@
 					  ],
 				  },
 				  
-				  formLabelWidth: '80px',
+				  formLabelWidth: '100px',
 				  timer: null,
 				
 				//课程管理
 				course:[],
+				courseDialog:false,
+				attachmentList:[],
+				attachment:{
+					uid:'',
+					courseId:'',
+					name:'',
+				},
+				attachmentName:'',
+				attaCourseId:'',
+				fileList:[],
+				multipleTable3:[],
 				
 				//富文本处理
 				editorOption: {
@@ -275,6 +352,10 @@
 		    },
 			
 		methods:{
+			handleExceed(files, fileList) {
+			        this.$message.warning(`当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+			},
+			
 			itemClick(index){
 				this.itemIndex=index;
 				
@@ -378,6 +459,51 @@
 				  }
 				});
 				
+			},
+			
+			//上传前参数处理
+			upAttachment(){
+				this.attachment.uid=this.uid;
+				this.attachment.courseId=this.attaCourseId
+				this.attachment.name=this.attachmentName;
+			},
+			//上传成功回调
+			upSuccess(response){
+				this.$message({
+				  type: 'success',
+				  message:  '附件上传成功！'
+				});
+				console.log(response);
+				this.attachmentList=response.data.data;
+			},
+			
+			//删除附件
+			delAttachment(row){
+				axios.post('http://localhost:9501/teacherCourse/delAttachment',row).then(response=>{
+					if(response.data.status=='0'){
+						this.$message.success(response.data.message);
+					}else{
+						this.$message.error(response.data.message);
+					}
+				}).catch(error=>{
+					this.$message.error(error.message);
+				})
+			},
+			
+			findAttachmentList(){
+				var data={
+					uid:this.uid
+				}
+				axios.post('http://localhost:9501/teacherCourse/findAttachmentList',data).then(res=>{
+					if(res.data.status=='0'){
+						this.attachmentList=res.data.data;
+						this.findAttachmentList();
+					}else{
+						this.$message.eroor('附件列表查询失败');
+					}
+				}).catch(error=>{
+					this.$message.error(eroor.message);
+				})
 			}
 		},
 		
@@ -386,6 +512,8 @@
 			this.uid=this.teacher.uid;
 			this.username=this.teacher.name;
 			this.getCourseList();
+			this.findAttachmentList();
+			
 		}
 	}
 </script>
