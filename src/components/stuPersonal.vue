@@ -299,7 +299,7 @@
 			forumItemClick(){
 				this.leftIndex='';
 				this.$router.push({
-					path:'/student/personal/forumUser'
+					path:'/student/forumUser'
 				})
 			},
 			

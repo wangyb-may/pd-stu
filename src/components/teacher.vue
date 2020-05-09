@@ -15,12 +15,10 @@
 		    <el-menu-item index="t/forum">论坛交流</el-menu-item>
 			<el-submenu index="4" style="justify-content: flex-end;">
 				<template slot="title">
-					<el-avatar :src="imageUrl"></el-avatar>
-					{{name}}
+					教师{{name}}
 				</template>
 				
-				<el-menu-item index="">个人中心</el-menu-item>
-				<el-menu-item index="4-2">使用帮助</el-menu-item>
+				<el-menu-item index="/teacher/personal">个人中心</el-menu-item>
 				<el-menu-item index="/login">退出登录</el-menu-item>
 			</el-submenu>
 		  </el-menu>
@@ -85,13 +83,7 @@
 </script>
 
 <style>
-	.el-header {
-	    background-color: #B3C0D1;
-	    color: #333;
-	    line-height: 60px;
-	  }
+	
 	  
-	  .el-aside {
-	    color: #333;
-	  }
+	  
 </style>

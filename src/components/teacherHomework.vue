@@ -145,7 +145,7 @@
 				  findInformation:'',
 				  
 				  //页面相关以及个人信息
-				  itemIndex:'',
+				  itemIndex:'1-1',
 				  uid:'',
 				  username:'',
 				  teacher:'',
@@ -429,11 +429,7 @@
 </script>
 
 <style>
-	.el-header {
-	    background-color: #B3C0D1;
-	    color: #333;
-	    line-height: 60px;
-	  }
+	
 	  
 	  .el-aside {
 	    color: #333;

@@ -60,7 +60,7 @@
 				
 				uid:'',
 				name:'',
-				imageUrl:"../src/static/image/x.jpg",
+				imageUrl:'',
 			}
 		},
 		
@@ -87,6 +87,7 @@
 			//var data=this.$route.query.userData;
 			this.uid=this.$route.query.uid;
 			this.name=this.$route.query.name;
+			thi.imageUrl=this.$route.query.imageUrl;
 			this.$router.replace({
 				path:'/student/study'
 			})

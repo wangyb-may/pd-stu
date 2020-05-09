@@ -286,7 +286,7 @@
 			return {
 				  
 				  //页面相关以及个人信息
-				  itemIndex:'',
+				  itemIndex:'1-1',
 				  uid:'',
 				  username:'',
 				  teacher:'',

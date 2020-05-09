@@ -166,9 +166,13 @@ export default{
 		updateForumName(){
 			//测试注释
 			console.log(this.ForumUser);
-			axios.get('http://localhost:9502/student/updateForumName',{params:{
+			var url=this.$route.path.split('/');
+			
+			var tableName='pd_'+url[1];
+			axios.get('http://localhost:9505/post/updateForumName',{params:{
 				uid:this.uid,
 				forumName:this.forumName,
+				table:tableName
 				}
 			}).then(response=>{
 				if(response.data.status=='0'){	
@@ -223,6 +227,7 @@ export default{
 	},
 	
 	created(){
+		
 		this.student=this.$store.state.userData;
 		this.uid=this.student.uid;
 		if(this.student.forumName!=null&&this.student.forumName!=""){
