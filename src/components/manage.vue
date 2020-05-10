@@ -14,7 +14,7 @@
 		    <el-menu-item index="2">教师账号管理</el-menu-item>
 			<el-submenu index="4" style="justify-content: flex-end;">
 				<template slot="title">
-					教师{{name}}
+					{{name}}
 				</template>
 			</el-submenu>
 		  </el-menu>
@@ -23,6 +23,47 @@
 	    
 	    <el-main>
 			<el-container v-if="index=='1'">
+				<el-header>
+					<el-row>
+						<el-col :span="3"><el-button type="primary" @click="downLoadModel()">下载学生账号模板</el-button></el-col>
+					  <el-col :span="3">
+						  <el-upload
+						    class="upload-demo"
+						    action="http://localhost:9503/admin/createNewStudent"
+						    :on-success="upSuccess"
+						    multiple
+						    :limit="1">
+						    <el-button
+						  	type="primary" 
+						    >批量导入学生账号</el-button>
+						  </el-upload>
+						  </el-col>
+					  
+					  <el-col :span="15">
+						  <el-input
+						  style="width: 300px;"
+							placeholder="搜索学生、学号(与班级无关)"
+							v-model="keyword"
+							clearable>
+						  </el-input>
+						  <el-button type="primary" icon="el-icon-search" @click="findStudentByKey"></el-button>
+					  </el-col>
+					  
+					  <el-col :span="6">
+						 <span>选择班级</span>
+						<el-select v-model="classNumber" placeholder="请选择" @change="findUser()">
+						  <el-option
+							v-for="item in classNumberList"
+							:key="item.classNumber"
+							:label="item.classNumber"
+							:value="item.classNumber"
+							>
+						  </el-option>
+						</el-select>
+					  </el-col>
+					</el-row>
+				</el-header>
+				
 				<el-table
 				    :data="student"
 				    stripe
@@ -48,7 +89,6 @@
 					  label="电话">
 					</el-table-column>
 					<el-table-column label="状态" prop="isDelete"></el-table-column>
-					
 					<el-table-column label="操作">
 						<template slot-scope="scope">
 							<el-button type="text" @click="delUser(scope.row,'pd_student')">停用</el-button>
@@ -59,6 +99,42 @@
 			</el-container>
 			
 			<el-container v-if="index=='2'">
+				<el-button type="primary" @click="teacherOpenWall()">添加新的教师账号</el-button>
+				<el-drawer
+				  title="添加新作业"
+				  :visible.sync="teacherDialog"
+				  direction="ltr"
+				  custom-class="demo-drawer"
+				  ref="drawer"
+				  >
+				  <div class="demo-drawer__content">
+				    <el-form :model="newTeacher" :rules="rules" ref="ruleForm">
+				      <el-form-item label="姓名" :label-width="formLabelWidth" prop="name">
+				        <el-input v-model="newTeacher.name" autocomplete="off"></el-input>
+				      </el-form-item>
+						<el-form-item label="电话" :label-width="formLabelWidth">
+						  <el-input  v-model="newTeacher.phone" autocomplete="off"></el-input>
+						</el-form-item>
+						<el-form-item label="密码" :label-width="formLabelWidth" prop="password">
+						  <el-input v-model="newTeacher.password" autocomplete="off"></el-input>
+						</el-form-item>
+				      <el-form-item label="性别" :label-width="formLabelWidth">
+				        <el-radio-group v-model="newTeacher.sex">
+				              <el-radio label="男"></el-radio>
+				              <el-radio label="女"></el-radio>
+				            </el-radio-group>
+						</el-form-item>
+				    </el-form>
+				    <div class="demo-drawer__footer">
+				      <el-button @click="cancelForm">取 消</el-button>
+				      <el-button type="primary" @click="createNewTeacher()" >确定</el-button>
+				    </div>
+				  </div>
+				</el-drawer>
+				
+				
+				
+				
 				<el-table
 				    :data="teacher"
 				    stripe
@@ -80,7 +156,6 @@
 					  label="电话">
 					</el-table-column>
 					<el-table-column label="状态" prop="del"></el-table-column>
-					
 					<el-table-column label="操作">
 						<template slot-scope="scope">
 							<el-button type="text" @click="delUser(scope.row,'pd_teacher')">停用</el-button>
@@ -110,6 +185,25 @@
 				teacher:[],
 				classNumberList:'',
 				classNumber:'',
+				keyword:'',
+				newTeacher:{
+					name:'',
+					phone:'',
+					sex:'',
+					password:''
+				},
+				formLabelWidth: '80px',
+				timer:null,
+				rules:{
+					name:[
+						{ required: true, message: '请输入姓名', trigger: 'blur' }
+					],
+					password:[
+						{ required: true, message: '请输入密码', trigger: 'blur' }
+					]
+				},
+				
+				teacherDialog:false,
 				
 			}
 		},
@@ -120,6 +214,27 @@
 				this.index=key;
 			},
 			
+			
+			teacherOpenWall(){
+				this.teacherDialog=true;
+			},
+			
+			cancelForm() {
+			  this.teacherDialog = false;
+			  clearTimeout(this.timer);
+			},
+			
+			//上传成功回调
+			upSuccess(response){
+				if(response.status=='0'){
+					this.$message.success(response.message);
+				}else{
+					this.$message.error(response.message);
+				}
+				
+				
+			},
+			
 			//查询班级
 			findClassNumber(){
 				var url="http://localhost:9503/admin/class";
@@ -128,6 +243,8 @@
 					if(response.data.status=='0'){
 						console.log(response)
 						this.classNumberList=response.data.data;
+						this.classNumber=this.classNumberList[0].classNumber;
+						this.findUser();
 					}else{
 						this.$message.error(response.data.message);
 					}
@@ -138,8 +255,7 @@
 			
 			//查询学生by班级
 			findUser(){
-				
-				this.classNumber=this.classNumberList[0].classNumber;
+
 				var data={
 					classNumber:this.classNumber
 				}
@@ -197,6 +313,62 @@
 				}).catch(e=>{
 					this.$message.error(e.message);
 				})
+			},
+			
+			//模糊查询学生
+			findStudentByKey(){
+				if(''==this.key){
+					this.$message.error("查询数据不能为空！");
+				}else{
+					var data={
+						key:this.keyword
+					}
+					axios.post('http://localhost:9503/admin/findStudentListByKey',data).then(response=>{
+						if(response.data.status=='0'){
+							this.student=response.data.data;
+							this.$message.success(response.data.message);
+						}else{
+							this.$message.error(response.data.message);
+						}
+					})
+				}
+			},
+			
+			//下载模板
+			downLoadModel(){
+				var url='http://localhost:9503/admin/createStuModel';
+					
+				axios.post(url,{headers:{'Content-Type': 'application/json; application/octet-stream'}}).then(response=>{
+				  let blob = new Blob([response.data], { type: "application/vnd.ms-excel" });
+		          let url = window.URL.createObjectURL(blob);
+		          const link = document.createElement("a"); // 创建a标签
+		          link.href = url;
+		          link.download = "学生账号导入模板.xls"; // 重命名文件
+		          link.click();
+		          URL.revokeObjectURL(url); // 释放内存
+					
+				}).catch(error=>{
+					
+				});
+			},
+			
+			createNewTeacher(){
+				axios.post('http://localhost:9503/admin/createNewTeacher',this.newTeacher).then(response=>{
+					
+					if(response.data.status=='0'){
+						this.findUser();
+						this.teacherDialog=false;
+						var uid=this.response.data.data;
+						
+						this.$notify({
+						  title: '提示',
+						  message: '新教师账号为'+uid.uid,
+						  duration: 0
+						});
+					}
+				}).catch(error=>{
+					this.$message.error(error.message);
+				})
 			}
 			
 		},
@@ -206,9 +378,6 @@
 			this.name=this.$store.state.userData.name;
 			
 			this.findClassNumber();
-			this.timer = setTimeout(()=>{   //设置延迟执行
-			    this.findUser()
-			},1000);
 
 		}
 		

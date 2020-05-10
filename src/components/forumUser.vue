@@ -27,7 +27,7 @@
 				      	  
 				      	  <el-row>
 				      		  <el-col :span="4"><el-image style="width: 100px; height: 100px" :src="circleUrl" fit="cover"></el-image></el-col>
-				      		  <el-col :span="15">{{post.content}}</el-col>
+				      		  <el-col :span="15"><div v-html="post.content"></div></el-col>
 				      		  <el-col :span="5">
 				      			  <el-row>
 				      				  <el-col :span="20"><i class="el-icon-user">{{post.createUser}}</i></el-col>
@@ -48,10 +48,16 @@
 				    </el-collapse-item>
 				  </el-collapse>
 			  </el-row>
+			  <el-divider></el-divider>
+			  <h4>新发帖</h4>
+			  <p>帖子标题<el-input v-model="title" style="width: 500px;"></el-input>
+			  <el-button type="primary" @click="addPost()">发布博客</el-button>
+			  </p>
+			  
 			  
 			  <!--发帖-->
 			  <el-row>
-				  <quill-editor v-model="content" ref="myQuillEditor" style="height: 500px;" :options="editorOption">
+				  <quill-editor v-model="content" ref="myQuillEditor" style="height: 300px;" :options="editorOption">
 				  <!-- 自定义toolar -->
 				  <div id="toolbar" slot="toolbar">
 					<!-- Add a bold button -->
@@ -102,7 +108,10 @@
 				  </div>
 				</quill-editor>
 			  </el-row>
+			  
 		  </el-form>
+			  
+		  
 	  
 </template>
 
@@ -144,8 +153,9 @@ export default{
 			student:'',
 			rawPosts:[],
 			dealPosts:[],
+			title:'',
 			
-			content: null,
+			content: '',
 			editorOption: {
 			  placeholder: "请输入",
 			  theme: "snow", // or 'bubble' 
@@ -217,6 +227,23 @@ export default{
 				}
 			}
 			return posts;
+		},
+		
+		addPost(){
+			var data={
+				content:this.content,
+				createUser:this.uid,
+				title:this.title,
+				postType:0
+			}
+			axios.post('http://localhost:9505/post/add',data).then(response=>{
+				if(response.data.status=='0'){
+					this.$message.success(response.data.message);
+					this.findUserPostList()
+				}
+			}).catch(err=>{
+				this.$message.error(response.data.message);
+			})
 		}
 		
 		

@@ -94,7 +94,7 @@
 							var rowPath;
 							if(this.isStu==0){
 								url='http://localhost:9502/student/login';
-								rowPath='/student'
+								rowPath='student'
 							}else{
 								url='http://localhost:9501/teacher/login'
 								rowPath='teacher'
@@ -106,8 +106,8 @@
 										console.log(response.data.data);
 										if(this.isStu==0){
 											this.$router.push({
-												path:rowPath,
-												query: {
+												name:rowPath,
+												params: {
 												    uid: response.data.data.uid,
 												    name: response.data.data.name,
 												  }

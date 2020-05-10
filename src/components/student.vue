@@ -15,7 +15,7 @@
 		    <el-menu-item index="s/forum">论坛交流</el-menu-item>
 			<el-submenu index="4" style="justify-content: flex-end;">
 				<template slot="title">
-					<el-avatar :src="imageUrl"></el-avatar>
+					<el-avatar shape="square" :size="50" :src="imageUrl"></el-avatar>
 					{{name}}
 				</template>
 				
@@ -29,19 +29,7 @@
 	    <!-- <el-aside width="200px">Aside</el-aside> -->
 	    <el-main>
 			<router-view></router-view>
-			<!-- <div v-if="index==='1'">
-				<stuStudy></stuStudy>	
-			</div>
 			
-			<div v-else-if="index==='2'">
-				<stuHomework></stuHomework>
-			</div>
-			<div v-else-if="index==='3'">
-				asdasdassadasdasdassdsa
-			</div>
-			<div v-else-if="index==='4-1'">
-				<stuPersonal></stuPersonal>
-			</div> -->
 		</el-main>
 	  </el-container>
 	</el-container>
@@ -71,12 +59,7 @@
 				this.$router.replace({
 					path:key
 				})
-				// this.index=key;
-				// if(this.index=="4-3"){
-				// 	this.$router.push({
-				// 		path:'/logIn'
-				// 	})
-				// }
+				
 			},
 			
 		
@@ -84,10 +67,12 @@
 		},
 		
 		created() {
-			//var data=this.$route.query.userData;
-			this.uid=this.$route.query.uid;
-			this.name=this.$route.query.name;
-			thi.imageUrl=this.$route.query.imageUrl;
+			
+			var data=this.$store.state.userData;
+			console.log(data);
+			this.uid=data.uid;
+			this.name=data.name;
+			this.imageUrl=data.imageUrl;
 			this.$router.replace({
 				path:'/student/study'
 			})
