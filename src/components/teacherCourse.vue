@@ -15,7 +15,13 @@
 	    </el-aside>
 		
 		<el-container v-if="itemIndex=='1-1'">
-			<el-table :data="course" ref = "multipleTable2">
+			<el-table :data="course" ref = "multipleTable2" @expand-change="findStudentByCourse">
+				<el-table-column type="expand">
+				      <template slot-scope="props" >
+						  已加入该课程的同学有：
+							<el-tag v-for="stu in student">{{stu.stuId}}{{stu.stuName}}</el-tag>
+				      </template>
+				</el-table-column>
 			  <el-table-column prop="name" label="课程名">
 			  </el-table-column>
 			  <el-table-column prop="classNumber" label="所属班级">
@@ -182,7 +188,7 @@
 		</el-container>
 		
 		<el-container v-if="itemIndex=='1-3'" >
-			<el-form style="width: 500px;">
+			<el-form style="width: 70%;">
 				<el-form-item>
 					<el-button type="primary" @click="courseDialog=true" style="height: 50px;">点击上传新的附件</el-button>
 				</el-form-item>
@@ -337,6 +343,7 @@
 				attaCourseId:'',
 				fileList:[],
 				multipleTable3:[],
+				student:[],
 				
 				//富文本处理
 				editorOption: {
@@ -499,7 +506,24 @@
 						this.attachmentList=res.data.data;
 						this.findAttachmentList();
 					}else{
-						this.$message.eroor('附件列表查询失败');
+						this.$message.error('附件列表查询失败');
+					}
+				}).catch(error=>{
+					this.$message.error(eroor.message);
+				})
+			},
+			
+			findStudentByCourse(row,expandedRows){
+				console.log(row);
+				var data={
+					courseId:row.courseId
+				}
+				axios.post('http://localhost:9501/teacherCourse/findStudentByCourse',data).then(res=>{
+					if(res.data.status=='0'){
+						console.log(res);
+						this.student=res.data.data;
+					}else{
+						this.$message.error('课程下人员查询失败');
 					}
 				}).catch(error=>{
 					this.$message.error(eroor.message);
@@ -520,3 +544,14 @@
 
 <style>
 </style>
+
+
+
+proxyTable: {
+            '/api/**': {
+                target: 'http://localhost:9502',
+                pathRewrite:{
+                    '^/api':'/'
+                }
+            },
+        },

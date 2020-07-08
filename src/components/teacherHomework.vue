@@ -69,7 +69,10 @@
 					  </el-header>
 					  <el-main>
 						  <el-table :data="homeworkData" ref = "multipleTable2">
-						   
+							  <el-table-column
+								  type="selection"
+								  width="55">
+							  </el-table-column>
 						    <el-table-column prop="name" label="作业名">
 						    </el-table-column>
 						    <el-table-column prop="context" label="内容">
@@ -240,7 +243,7 @@
 					this.$message.error('该同学的作业还未提交不能评分！');
 					return;
 				}
-				this.$prompt('请输入分数', '评分', {
+				this.$prompt('请为'+row.stuName+'的'+row.homeworkName+'作业评分', '评分', {
 				  confirmButtonText: '确定',
 				  cancelButtonText: '取消',
 				  inputPattern: /^[0-9]*$/,

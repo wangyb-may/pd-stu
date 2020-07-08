@@ -230,6 +230,7 @@
 			//上传头像成功的回调方法
 			handleAvatarSuccess:async function(res, file) {
 				this.upImageUrl = URL.createObjectURL(file.raw);
+				this.$message.success('上传头像成功！');
 			},
 			
 			//上传头像前的检测

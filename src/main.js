@@ -31,6 +31,9 @@ Vue.use(ElementUI)
 Vue.use(VueRouter);
 Vue.use(VueQuillEditor);
 
+
+
+
 const routes=[
 	// {path:'/', redirect: '/logIn',component:logIn},
 	{path:'/logIn',name:'logIn',component:logIn},

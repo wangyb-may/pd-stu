@@ -99,7 +99,7 @@
 			</el-container>
 			
 			<el-container v-if="index=='2'">
-				<el-button type="primary" @click="teacherOpenWall()">添加新的教师账号</el-button>
+				<el-button type="primary" @click="teacherOpenWall()" style="width: 200px;">添加新的教师账号</el-button>
 				<el-drawer
 				  title="添加新作业"
 				  :visible.sync="teacherDialog"
@@ -336,9 +336,34 @@
 			
 			//下载模板
 			downLoadModel(){
-				var url='http://localhost:9503/admin/createStuModel';
+				var data={
 					
-				axios.post(url,{headers:{'Content-Type': 'application/json; application/octet-stream'}}).then(response=>{
+				}
+				var url='http://localhost:9503/admin/createStuModel';
+				var xhr = new XMLHttpRequest();
+				//post方式请求后台的路径
+				xhr.open('post', url, true);
+				//导出的Excel是二进制数据类型，所以设置为blob
+				xhr.responseType = 'blob';
+				//请求头（key,value），请求头可以设置多个key-value对
+				xhr.setRequestHeader('Content-Type', 'application/json;charset=utf-8');
+				//返回成功，导出的Excel文件
+				xhr.onload = function () {
+					if (this.status == 200) {
+						var blob = this.response;
+						var a = document.createElement('a');
+						var url = window.URL.createObjectURL(blob);
+						a.href = url;
+						//设置文件名称
+						a.download = '学生账号导入模板'+'.xlsx';
+						a.click();
+					}
+				}
+				xhr.send(JSON.stringify(data));
+					
+					
+					
+				/* axios.post(url,{headers:{'Content-Type': 'application/json; application/octet-stream'}}).then(response=>{
 				  let blob = new Blob([response.data], { type: "application/vnd.ms-excel" });
 		          let url = window.URL.createObjectURL(blob);
 		          const link = document.createElement("a"); // 创建a标签
@@ -349,7 +374,7 @@
 					
 				}).catch(error=>{
 					
-				});
+				}); */
 			},
 			
 			createNewTeacher(){
@@ -358,7 +383,7 @@
 					if(response.data.status=='0'){
 						this.findUser();
 						this.teacherDialog=false;
-						var uid=this.response.data.data;
+						var uid=response.data.data;
 						
 						this.$notify({
 						  title: '提示',

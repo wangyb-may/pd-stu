@@ -6,16 +6,16 @@
 		    class="el-menu-demo"
 		    mode="horizontal"
 		    @select="handMenuSelect"
-		    background-color="#545c64"
+		    background-color="#409EFF"
 		    text-color="#fff"
-		    active-text-color="#409EFF">
+		    active-text-color="#000000">
 			
 		    <el-menu-item index="/student/study">学习中心</el-menu-item>
 		    <el-menu-item index="/student/homework">我的作业</el-menu-item>
 		    <el-menu-item index="s/forum">论坛交流</el-menu-item>
 			<el-submenu index="4" style="justify-content: flex-end;">
 				<template slot="title">
-					<el-avatar shape="square" :size="50" :src="imageUrl"></el-avatar>
+					<el-avatar  :size="50" :src="imageUrl"></el-avatar>
 					{{name}}
 				</template>
 				

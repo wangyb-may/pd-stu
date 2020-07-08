@@ -15,7 +15,7 @@
 			  <el-row>
 			    <el-col :span="5" v-for="(list,index) in courseList" :key="index" :offset="index > 0 ? 1 : 0">
 			      <el-card shadow="hover" :body-style="{ padding: '0px' }">
-			        <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" class="image">
+			        <img src="https://wyb-bysj.oss-cn-chengdu.aliyuncs.com/image/port/31port?Expires=1591629344&OSSAccessKeyId=TMP.3Kk29vCZKF64qxfsznhWHC2U4viqKLc2CcHTQYUzGrZPXoM79HB9RHQXQ6sDwfn7dD4XdJvo4p7vPZ4ST8eki3JfcB7L9L&Signature=HyLg14f%2FohxQu0PAaTqL7F2vDIM%3D" class="image">
 			        <div style="padding: 14px;">
 			          <span>{{list.name}}</span>
 			          <div class="bottom clearfix">
@@ -41,7 +41,7 @@
 	  </el-tab-pane>
 	  
 	  <el-tab-pane label="教学辅助资料">
-		  	<el-table :data="attachmentList" ref = "multipleTable">
+		  	<el-table :data="attachmentList" ref = "multipleTable" >
 		  	  <el-table-column prop="name" label="附件名">
 		  	  </el-table-column>
 		  	  <el-table-column prop="courseName" label="所属课程">
