@@ -15,7 +15,7 @@
 			  <el-row>
 			    <el-col :span="5" v-for="(list,index) in courseList" :key="index" :offset="index > 0 ? 1 : 0">
 			      <el-card shadow="hover" :body-style="{ padding: '0px' }">
-			        <img src="https://wyb-bysj.oss-cn-chengdu.aliyuncs.com/image/port/31port?Expires=1591629344&OSSAccessKeyId=TMP.3Kk29vCZKF64qxfsznhWHC2U4viqKLc2CcHTQYUzGrZPXoM79HB9RHQXQ6sDwfn7dD4XdJvo4p7vPZ4ST8eki3JfcB7L9L&Signature=HyLg14f%2FohxQu0PAaTqL7F2vDIM%3D" class="image">
+			        <img src="../assets/logo.png" class="image">
 			        <div style="padding: 14px;">
 			          <span>{{list.name}}</span>
 			          <div class="bottom clearfix">
